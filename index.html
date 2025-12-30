@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mining Pips Terminal</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #050505;
+            --card-bg: rgba(20, 20, 20, 0.8);
+            --accent: #FFD700; /* Gold */
+            --glow: rgba(255, 215, 0, 0.3);
+            --text-main: #ffffff;
+            --text-dim: #888888;
+            --danger: #ff3b30;
+            --success: #34c759;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: radial-gradient(circle at 50% 0%, #1a1a1a 0%, #000000 70%);
+            color: var(--text-main);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Header Area */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: fadeInDown 0.8s ease;
+        }
+        
+        .logo-text {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: var(--accent);
+            text-shadow: 0 0 15px var(--glow);
+            text-transform: uppercase;
+        }
+        
+        .user-badge {
+            display: inline-block;
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid var(--accent);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-top: 10px;
+            color: var(--accent);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+            animation: fadeInUp 1s ease;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid #333;
+            border-radius: 16px;
+            padding: 15px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: transform 0.2s;
+        }
+        
+        .stat-card:active { transform: scale(0.98); }
+
+        .stat-value {
+            font-size: 22px;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Progress Section */
+        .progress-container {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid #333;
+            margin-bottom: 25px;
+            animation: fadeInUp 1.2s ease;
+        }
+
+        .level-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .progress-bar-bg {
+            background: #333;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            background: linear-gradient(90deg, var(--accent), #FFA500);
+            height: 100%;
+            width: 20%; /* Dynamic Width */
+            box-shadow: 0 0 10px var(--glow);
+            border-radius: 4px;
+        }
+        
+        .loyalty-text {
+            font-size: 11px;
+            color: var(--text-dim);
+            margin-top: 10px;
+            text-align: right;
+        }
+
+        /* Main Wallet Card */
+        .wallet-card {
+            background: linear-gradient(145deg, #1e1e1e, #141414);
+            border: 1px solid #444;
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            animation: zoomIn 0.8s ease;
+        }
+        
+        .wallet-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,215,0,0.05) 0%, transparent 70%);
+            animation: rotate 10s linear infinite;
+        }
+
+        .balance-label { font-size: 14px; color: #aaa; margin-bottom: 5px; position: relative; }
+        .balance-amount { font-size: 38px; color: #fff; font-weight: 700; position: relative; }
+        .currency { font-size: 20px; color: var(--accent); }
+
+        /* Action Buttons */
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            animation: fadeInUp 1.4s ease;
+        }
+
+        .btn {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 18px;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-transform: uppercase;
+            box-shadow: 0 4px 15px var(--glow);
+            transition: all 0.2s;
+        }
+
+        .btn:active { transform: translateY(2px); box-shadow: none; }
+        
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid #444;
+            color: #fff;
+            box-shadow: none;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes zoomIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="logo-text">MINING PIPS <span style="color:#fff; font-size:12px;">AI</span></div>
+        <div class="user-badge" id="username">LOADING...</div>
+    </div>
+
+    <div class="wallet-card">
+        <div class="balance-label">WALLET BALANCE</div>
+        <div class="balance-amount">$<span id="balance">--.--</span></div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <span class="stat-value" style="color: var(--accent);" id="signals">--</span>
+            <span class="stat-label">Signals Received</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-value" id="spent">--</span>
+            <span class="stat-label">Total Volume</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-value" id="rank">--</span>
+            <span class="stat-label">Trader Rank</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-value" style="color: var(--success);">Active</span>
+            <span class="stat-label">Status</span>
+        </div>
+    </div>
+
+    <div class="progress-container">
+        <div class="level-info">
+            <span>LOYALTY TIER</span>
+            <span style="color: var(--accent);">Level 1</span>
+        </div>
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill" style="width: 15%;"></div>
+        </div>
+        <div class="loyalty-text">Next Price Tier: $59 (Keep active to avoid penalty)</div>
+    </div>
+
+    <div class="btn-group">
+        <button class="btn" onclick="sendAction('buy_menu')">
+            <i class="fas fa-gem"></i> EXTEND MEMBERSHIP
+        </button>
+        <button class="btn btn-secondary" onclick="sendAction('enter_code')">
+            <i class="fas fa-ticket-alt"></i> REDEEM CODE
+        </button>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand(); 
+
+        // شبیه‌سازی دریافت دیتا (در نسخه واقعی باید از ربات پاس داده شود)
+        // فعلاً برای زیبایی این‌ها رو ست می‌کنیم تا ربات اصلی رو آپدیت کنیم که دیتا بفرسته
+        const user = tg.initDataUnsafe.user;
+        
+        if (user) {
+            document.getElementById("username").innerText = (user.first_name + " " + (user.last_name || "")).toUpperCase();
+        } else {
+            document.getElementById("username").innerText = "GUEST TRADER";
+        }
+
+        // این مقادیر باید در آینده واقعی شوند
+        // فعلا به صورت دمو پر می‌شوند تا گرافیک را ببینید
+        document.getElementById("balance").innerText = "15.00"; 
+        document.getElementById("signals").innerText = "0"; 
+        document.getElementById("spent").innerText = "$0"; 
+        document.getElementById("rank").innerText = "NOVICE"; 
+
+        function sendAction(action) {
+            tg.sendData(action); // ارسال دستور به ربات پایتون
+            tg.close(); // بستن پنجره
+        }
+
+        // تم رنگی
+        tg.setHeaderColor('#050505');
+    </script>
+</body>
+</html>
